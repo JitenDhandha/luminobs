@@ -27,7 +27,7 @@ def give_me_a_figure():
     ax.set_ylim(1e-8,1e-2)
     return fig, ax
 
-class JWSTData:
+class UVLFdata:
     
     def __init__(self, filename):
         
@@ -131,10 +131,10 @@ class JWSTData:
             ax.plot(fit_x, fit_y, color=color, linestyle='--')
     
 _current_dir = str(pathlib.Path(__file__).parent.absolute())+'/data/'
-Finkelstein2023 = JWSTData(_current_dir+'Finkelstein2023') # https://arxiv.org/abs/2311.04279
-Donnan2023 = JWSTData(_current_dir+'Donnan2023') # https://arxiv.org/abs/2207.12356
-Leung2023 = JWSTData(_current_dir+'Leung2023') # https://arxiv.org/abs/2306.06244
-McLeod2023 = JWSTData(_current_dir+'McLeod2023') # https://arxiv.org/abs/2304.14469
-Bouwens2023 = JWSTData(_current_dir+'Bouwens2023') # https://arxiv.org/abs/2211.02607
-PerezGonzalez2023 = JWSTData(_current_dir+'Perez-Gonzalez2023') # https://arxiv.org/abs/2302.02429
-Harikane2023 = JWSTData(_current_dir+'Harikane2023') # https://arxiv.org/abs/2208.01612
+Finkelstein2023 = UVLFdata(_current_dir+'Finkelstein2023') # https://arxiv.org/abs/2311.04279
+Donnan2023 = UVLFdata(_current_dir+'Donnan2023') # https://arxiv.org/abs/2207.12356
+Leung2023 = UVLFdata(_current_dir+'Leung2023') # https://arxiv.org/abs/2306.06244
+McLeod2023 = UVLFdata(_current_dir+'McLeod2023') # https://arxiv.org/abs/2304.14469
+Bouwens2023 = UVLFdata(_current_dir+'Bouwens2023') # https://arxiv.org/abs/2211.02607
+PerezGonzalez2023 = UVLFdata(_current_dir+'Perez-Gonzalez2023') # https://arxiv.org/abs/2302.02429
+Harikane2023 = UVLFdata(_current_dir+'Harikane2023') # https://arxiv.org/abs/2208.01612
