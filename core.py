@@ -81,31 +81,54 @@ class JWSTData:
             elif(self.fit_type=="Schechter"):
                 return schechter(*list(fit_z_df.iloc[0])[1:])
             
-    def plot_UVLF(self, z, ax, color='black', label=None, xerr=True, fit=False):
+    def plot_UVLF(self, z, ax, color='black', label=None, yerr=True, xerr=True, plot_fit=False,
+                  **kwargs):
         UVLF_z_df = self.get_UVLF(z)
         x = np.copy(UVLF_z_df["MUV"].values)
         y = np.copy(UVLF_z_df["UVLF"].values)
+        
+        # Handling error bars
         if(xerr):
             xerr = np.copy(UVLF_z_df["MUV bin size"].values)/2
         else:
             xerr = None
-        yerr_p = np.copy(UVLF_z_df["UVLF +ve error"].values)
-        yerr_m = np.copy(abs(UVLF_z_df["UVLF -ve error"].values))
-        uplims = yerr_m < 1e-30
-        yerr_m[uplims] = 0.5 * y[uplims]
+        if(yerr):
+            yerr_p = np.copy(UVLF_z_df["UVLF +ve error"].values)
+            yerr_m = np.copy(abs(UVLF_z_df["UVLF -ve error"].values))
+            uplims = yerr_m < 1e-30
+            yerr_m[uplims] = 0.5 * y[uplims]
+            yerr = [yerr_m, yerr_p]
+        else:
+            yerr = None
+            uplims = None
+            
+        # Additional plotting options
+        if "markersize" in kwargs:
+            markersize = kwargs["markersize"]
+        else:
+            markersize = 5
+        if "capsize" in kwargs:
+            capsize = kwargs["capsize"]
+        else:
+            capsize = 4
+        if "fmt" in kwargs:
+            fmt = kwargs["fmt"]
+        else:
+            fmt = 'o'
+            
+        # Plotting
         ax.errorbar(x, y,
                     xerr=xerr, 
-                    yerr=[yerr_m, yerr_p],
+                    yerr=yerr,
                     uplims=uplims,
-                    fmt='o', color=color, 
-                    capsize = 4,
+                    color=color, 
+                    fmt=fmt, 
+                    markersize=markersize,
+                    capsize=capsize,
                     label=label)
-        #xlim, ylim = ax.get_xlim(), ax.get_ylim()
-        if(fit):
+        if(plot_fit):
             fit_x, fit_y = self.get_fit(z)
             ax.plot(fit_x, fit_y, color=color, linestyle='--')
-        #ax.set_xlim(xlim)
-        #ax.set_ylim(ylim)
     
 _current_dir = str(pathlib.Path(__file__).parent.absolute())+'/data/'
 Finkelstein2023 = JWSTData(_current_dir+'Finkelstein2023') # https://arxiv.org/abs/2311.04279
