@@ -4,6 +4,14 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pathlib
 
+DATASETS = ['Finkelstein2023', # https://arxiv.org/abs/2311.04279
+            'Donnan2023', # https://arxiv.org/abs/2207.12356
+            'Leung2023', # https://arxiv.org/abs/2306.06244
+            'McLeod2023', # https://arxiv.org/abs/2304.14469
+            'Bouwens2023', # https://arxiv.org/abs/2211.02607
+            'Perez-Gonzalez2023', # https://arxiv.org/abs/2302.02429
+            'Harikane2023'] # https://arxiv.org/abs/2208.01612
+
 def double_power_law(phi_star, Mstar, alpha, beta):
     M = np.linspace(-25,-10,100)
     x = 10**(0.4*(alpha+1)*(M-Mstar))
@@ -129,12 +137,10 @@ class UVLFdata:
         if(plot_fit):
             fit_x, fit_y = self.get_fit(z)
             ax.plot(fit_x, fit_y, color=color, linestyle='--')
-    
-_current_dir = str(pathlib.Path(__file__).parent.absolute())+'/data/'
-Finkelstein2023 = UVLFdata(_current_dir+'Finkelstein2023') # https://arxiv.org/abs/2311.04279
-Donnan2023 = UVLFdata(_current_dir+'Donnan2023') # https://arxiv.org/abs/2207.12356
-Leung2023 = UVLFdata(_current_dir+'Leung2023') # https://arxiv.org/abs/2306.06244
-McLeod2023 = UVLFdata(_current_dir+'McLeod2023') # https://arxiv.org/abs/2304.14469
-Bouwens2023 = UVLFdata(_current_dir+'Bouwens2023') # https://arxiv.org/abs/2211.02607
-PerezGonzalez2023 = UVLFdata(_current_dir+'Perez-Gonzalez2023') # https://arxiv.org/abs/2302.02429
-Harikane2023 = UVLFdata(_current_dir+'Harikane2023') # https://arxiv.org/abs/2208.01612
+
+def load_dataset(dataset_name):
+    if(dataset_name not in DATASETS):
+        raise ValueError(f"Dataset {dataset_name} not recognised. Please choose from {DATASETS}")
+    else:
+        _current_dir = str(pathlib.Path(__file__).parent.absolute())+'/data/'
+        return UVLFdata(_current_dir+dataset_name)
