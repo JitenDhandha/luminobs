@@ -8,8 +8,11 @@ DATASETS = ['Finkelstein2023', # https://arxiv.org/abs/2311.04279
             'Donnan2023', # https://arxiv.org/abs/2207.12356
             'Leung2023', # https://arxiv.org/abs/2306.06244
             'McLeod2023', # https://arxiv.org/abs/2304.14469
+            'Bouwens2021', # https://arxiv.org/abs/2102.07775
+            'Bouwens2022', # https://arxiv.org/abs/2205.11526
             'Bouwens2023', # https://arxiv.org/abs/2211.02607
             'Perez-Gonzalez2023', # https://arxiv.org/abs/2302.02429
+            'Harikane2022', # https://arxiv.org/abs/2108.01090
             'Harikane2023'] # https://arxiv.org/abs/2208.01612
 
 def double_power_law(phi_star, Mstar, alpha, beta):
@@ -23,6 +26,13 @@ def schechter(phi_star, Mstar, alpha):
     x = 10**(0.4*(alpha+1)*(M-Mstar))
     y = 10**(0.4*(Mstar-M))
     return M, (phi_star / x ) * np.exp(-y)
+
+def shechter_modified(phi_star, Mstar, alpha, delta):
+    M = np.linspace(-25,-10,100)
+    x = 10**(0.4*(alpha+1)*(M-Mstar))
+    y = 10**(0.4*(Mstar-M))
+    z = (M>=-16) * 10**(-0.4*delta*(M+16)**2) + (M<-16)
+    return M, (phi_star / x ) * np.exp(-y) * z
 
 def give_me_a_figure():
     fig, ax = plt.subplots(1,1, figsize=(7,5))
@@ -59,6 +69,11 @@ class UVLFdata:
                             delimiter=',',
                             comment='#',
                             names=['z','phi_star','Mstar','alpha'])
+        elif(self.fit_type=="SchechterModified"):
+            data = pd.read_csv(filename,
+                            delimiter=',',
+                            comment='#',
+                            names=['z','phi_star','Mstar','alpha','delta'])
         else:
             raise ValueError(f"Fit type {self.fit_type} not recognised")
         self.fit_df = [data.groupby(data.z).get_group(z) for z in self.z]
@@ -88,6 +103,8 @@ class UVLFdata:
                 return double_power_law(*list(fit_z_df.iloc[0])[1:])
             elif(self.fit_type=="Schechter"):
                 return schechter(*list(fit_z_df.iloc[0])[1:])
+            elif(self.fit_type=="SchechterModified"):
+                return shechter_modified(*list(fit_z_df.iloc[0])[1:])
             
     def plot_UVLF(self, z, ax, color='black', label=None, yerr=True, xerr=True, plot_fit=False,
                   **kwargs):
