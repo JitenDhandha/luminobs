@@ -13,7 +13,11 @@ DATASETS = ['Finkelstein2023', # https://arxiv.org/abs/2311.04279
             'Bouwens2023', # https://arxiv.org/abs/2211.02607
             'Perez-Gonzalez2023', # https://arxiv.org/abs/2302.02429
             'Harikane2022', # https://arxiv.org/abs/2108.01090
-            'Harikane2023'] # https://arxiv.org/abs/2208.01612
+            'Harikane2023a', # https://arxiv.org/abs/2208.01612
+            'Robertson2023'] # https://arxiv.org/abs/2312.10033
+            #Adams2023: https://arxiv.org/abs/2304.13721
+            #Willott2023: https://arxiv.org/abs/2311.12234
+            #Harikane2023b: https://arxiv.org/abs/2304.06658
 
 def double_power_law(phi_star, Mstar, alpha, beta):
     M = np.linspace(-25,-10,100)
@@ -57,8 +61,13 @@ class UVLFdata:
         self._read_fit(filename+'_fit.csv')
         
     def _read_fit(self, filename):
-        with open(filename) as f:
-            self.fit_type = f.readline().split('#')[-1].strip()
+        try:
+            with open(filename) as f:
+                self.fit_type = f.readline().split('#')[-1].strip()
+        except FileNotFoundError:
+            self.fit_type = None
+            self.fit_df = None
+            return
         if(self.fit_type=="DPL"):
             data = pd.read_csv(filename,
                             delimiter=',',
